@@ -1,0 +1,36 @@
+[alias]
+lg = log --color --graph --pretty=format:'%C(magenta)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[commit]
+gpgsign = true
+[core]
+excludesfile = ~/.gitignore
+[fetch]
+prune = true
+[color]
+branch = auto
+diff = auto
+interactive = auto
+status = auto
+[gitflow "prefix"]
+feature = feature/
+bugfix = bugfix/
+release = release/
+hotfix = hotfix/
+support = support/
+versiontag = v
+[gpg]
+format = ssh
+[user]
+signingkey = ~/.ssh/id_ed25519.pub
+[init]
+defaultBranch = main
+[filter "lfs"]
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
+[push]
+autoSetupRemote = true
+gpgSign = if-asked
+[tag]
+gpgSign = true

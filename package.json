@@ -1,0 +1,24 @@
+{
+  "name": "chain",
+  "version": "1.0.0",
+  "description": "Golang execution layer implementation of the Ethereum protocol.",
+  "main": "ecosystem.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@gitlab.jcwork.net:22222/chain/chain.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^17.2.1"
+  }
+}

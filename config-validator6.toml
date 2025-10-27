@@ -1,0 +1,32 @@
+[Node]
+DataDir = "./private-chain/data-validator6"
+KeyStoreDir = "./private-chain/data-validator6/keystore"
+
+[Node.P2P]
+NoDiscovery = false
+# 验证者6直接连接到其他验证者节点
+StaticNodes = ["enode://980e65a731167c274ca9eb07e2a540008cddfab380c77b7803957ebdbd08ce3717cc99912408b485adb472db93f2ea30b19c9b3349639153ffce15661df41c3b@127.0.0.1:30301", "enode://1624bd58142af3c421f6fd6d04fba2f3156c5dded8764ff2394d61a12b6eec160147533c7b77d54b139ba3dc70b0fcd55a4c1c3018ab8c5484edf6a7e75e5de3@127.0.0.1:30303", "enode://2feae848f21c7be10b943032e45dfa77c468942765c0288e581b035697665ffcfa734764044e756a94e1f874b776a9cf90442cd72e0a3ca1a3e6ae3d9b932c9f@127.0.0.1:30304", "enode://64a1affe02be93b55331b294d0ac98204dbcb06a95b0b8bb221e89de9af65a3d8ff9933c1ce943615f77a6c60867f7b33080887e61ce586f10009669084a0a48@127.0.0.1:30305", "enode://e988d046de1d9be2c452302c450730a2e0d72b6122b30e0ae4a4d339541957e72f49438de6a9d953620dede65059ae883852254ff42d3f54792a376eec5a309a@127.0.0.1:30306", "enode://a80d366b95e98c113371ba437907c1d417593a772a7e67a43fd90ec2c6d6ee427f68a3e54341bf3af51c7770f18623c121563a134bcb5aad93762ec233a8461c@127.0.0.1:30308"]
+
+[Eth]
+NetworkId = 202599
+SyncMode = "full"
+
+[Eth.Miner]
+GasCeil = 8000000
+GasPrice = 1000000000
+Recommit = 3000000000
+
+[Eth.TxPool]
+NoLocals = true
+GlobalSlots = 12800
+GlobalQueue = 5120
+Lifetime = 600000000000
+PriceLimit = 1000000000
+
+[Metrics]
+Enabled = false
+
+[Node.HTTPTimeouts]
+ReadTimeout = 30000000000
+WriteTimeout = 30000000000
+IdleTimeout = 120000000000

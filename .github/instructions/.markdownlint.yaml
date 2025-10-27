@@ -1,0 +1,8 @@
+default: true
+first-line-heading: false
+line-length: false
+no-hard-tabs:
+  code_blocks: false
+  spaces_per_tab: 2
+no-duplicate-heading:
+  siblings_only: true
