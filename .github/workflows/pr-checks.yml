@@ -2,7 +2,7 @@ name: PR Checks
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, test-ci-integration ]
   workflow_dispatch:
 
 env:
