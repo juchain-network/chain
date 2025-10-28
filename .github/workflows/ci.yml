@@ -93,16 +93,11 @@ jobs:
 
       - name: Build geth
         run: |
-          go build -o ci-tool build/ci.go
-          ./ci-tool install ./cmd/geth
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go run build/ci.go install ./cmd/geth
 
       - name: Build all tools
         run: |
-          go build -o ci-tool build/ci.go
-          ./ci-tool install
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go run build/ci.go install
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -252,18 +247,16 @@ jobs:
 
       - name: Build release binaries
         run: |
-          go build -o ci-tool build/ci.go
-          
           # Linux
-          GOOS=linux GOARCH=amd64 ./ci-tool install
+          GOOS=linux GOARCH=amd64 go run build/ci.go install
           tar -czf geth-linux-amd64.tar.gz -C build/bin .
           
           # Windows
-          GOOS=windows GOARCH=amd64 ./ci-tool install
+          GOOS=windows GOARCH=amd64 go run build/ci.go install
           zip -r geth-windows-amd64.zip build/bin/
           
           # macOS
-          GOOS=darwin GOARCH=amd64 ./ci-tool install
+          GOOS=darwin GOARCH=amd64 go run build/ci.go install
           tar -czf geth-darwin-amd64.tar.gz -C build/bin .
 
       - name: Upload release artifacts
