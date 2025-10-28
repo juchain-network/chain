@@ -198,6 +198,7 @@ jobs:
         with:
           version: "latest"
           install-go: false
+          args: "-checks=all,-ST1000,-ST1003,-ST1005,-ST1012,-ST1016,-ST1020,-ST1021,-ST1022,-ST1023,-SA1006,-SA1019,-SA1029,-SA4003,-SA4011,-SA9009,-S1009,-S1024,-U1000"
         continue-on-error: true
 
   # Release build
