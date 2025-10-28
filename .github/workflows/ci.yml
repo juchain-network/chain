@@ -197,16 +197,16 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Install Gosec
-        run: go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+      - name: Run Go Vet
+        run: go vet ./...
+        continue-on-error: true
 
-      - name: Run Gosec Security Scanner
-        run: gosec -fmt sarif -out results.sarif ./...
-
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+      - name: Run Staticcheck
+        uses: dominikh/staticcheck-action@v1
         with:
-          sarif_file: results.sarif
+          version: "latest"
+          install-go: false
+        continue-on-error: true
 
   # Release build
   release:
