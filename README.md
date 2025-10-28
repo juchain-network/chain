@@ -15,7 +15,7 @@ On top of EVM compatibility, JuChain introduces a Proof of Staked Authority (JPo
 
 **JuChain Features:**
 
-* **Self-sovereign blockchain:** Security and reliability through elected validators.
+* **Self-sovereign blockchain:** Security and reliability through elected validators.****
 * **EVM compatible:** Supports all Ethereum tooling, with faster finality and lower transaction fees.
 * **On-chain governance and decentralization:** JPoSA consensus brings decentralization and community participation. The native token JU serves as both gas for smart contract execution and staking/governance.
 
@@ -92,6 +92,36 @@ Minimum:
 
 Recommended:
 
+* Fast CPU with 16+ cores
+* 32GB+ RAM
+* High-performance SSD with at least 2TB of free space
+* 50+ MBit/sec download Internet service
+
+### Full node on the main JuChain network
+
+By far the most common scenario is people wanting to simply interact with the JuChain
+network: create accounts; transfer funds; deploy and interact with contracts. For this
+particular use-case the user doesn't care about years-old historical data, so we can
+fast-sync quickly to the current state of the network. To do so:
+
+```shell
+$ geth console
+```
+
+This command will:
+ * Start `geth` in snap sync mode (default, can be changed with the `--syncmode` flag),
+   causing it to download more data in exchange for avoiding processing the entire history
+   of the Ethereum network, which is very CPU intensive.
+ * Start up `geth`'s built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interface/javascript-console),
+   (via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://web3js.readthedocs.io/) 
+   (note: the `web3` version bundled within `geth` is very old, and not up to date with official docs),
+   as well as `geth`'s own [management APIs](https://geth.ethereum.org/docs/rpc/server).
+   This tool is optional and if you leave it out you can always attach to an already running
+   `geth` instance with `geth attach`.
+
+### Configuration
+
+As an alternative to passing the numerous flags to the `geth` binary, you can also pass a
 configuration file via:
 
 ```shell
@@ -106,26 +136,6 @@ geth --your-favourite-flags dumpconfig
 ```
 
 *Note: This works only with `geth` v1.6.0 and above.*
-
-#### Docker quick start
-
-One of the quickest ways to get Ethereum up and running on your machine is by using
-Docker:
-
-```shell
-docker run -d --name ethereum-node -v /Users/alice/ethereum:/root \
-           -p 8545:8545 -p 30303:30303 \
-           ethereum/client-go
-```
-
-This will start `geth` in snap-sync mode with a DB memory allowance of 1GB, as the
-above command does.  It will also create a persistent volume in your home directory for
-saving your blockchain as well as map the default ports. There is also an `alpine` tag
-available for a slim version of the image.
-
-Do not forget `--http.addr 0.0.0.0`, if you want to access RPC from other containers
-and/or hosts. By default, `geth` binds to the local interface and RPC endpoints are not
-accessible from the outside.
 
 ### Programmatically interfacing `geth` nodes
 
@@ -284,7 +294,7 @@ transactions are accepted at (`--miner.gasprice`).
 
 Join our community to stay updated and connect with other developers:
 
-* **Discord**: [https://discord.gg/jFdDcpjv](https://discord.gg/jFdDcpjv) - Join our developer community for discussions, support, and collaboration
+* **Discord**: [https://discord.com/invite/QMVjsaJTmA](https://discord.com/invite/QMVjsaJTmA) - Join our developer community for discussions, support, and collaboration
 * **Twitter/X**: [https://x.com/juchain101](https://x.com/juchain101) - Follow us for the latest updates and announcements
 
 ## Contribution
@@ -294,7 +304,7 @@ from anyone on the internet, and are grateful for even the smallest of fixes!
 
 If you'd like to contribute to JuChain, please fork, fix, commit and send a pull request
 for the maintainers to review and merge into the main code base. If you wish to submit
-more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/jFdDcpjv)
+more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.com/invite/QMVjsaJTmA)
 to ensure those changes are in line with the general philosophy of the project and/or get
 some early feedback which can make both your efforts much lighter as well as our review
 and merge procedures quick and simple.
@@ -312,12 +322,6 @@ Please make sure your contributions adhere to our coding guidelines:
 Please see the [Developers' Guide](https://geth.ethereum.org/docs/developers/geth-developer/dev-guide)
 for more details on configuring your environment, managing project dependencies, and
 testing procedures.
-
-### Contributing to geth.ethereum.org
-
-For contributions to the [go-ethereum website](https://geth.ethereum.org), please checkout and raise pull requests against the `website` branch.
-For more detailed instructions please see the `website` branch [README](https://github.com/ethereum/go-ethereum/tree/website#readme) or the
-[contributing](https://geth.ethereum.org/docs/developers/geth-developer/contributing) page of the website.
 
 ## License
 
