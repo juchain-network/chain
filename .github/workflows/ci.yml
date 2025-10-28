@@ -92,13 +92,17 @@ jobs:
         run: go mod download
 
       - name: Build geth
-        run: go run build/ci.go install ./cmd/geth
+        run: |
+          go build -o ci-tool build/ci.go
+          ./ci-tool install ./cmd/geth
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
 
       - name: Build all tools
-        run: go run build/ci.go install
+        run: |
+          go build -o ci-tool build/ci.go
+          ./ci-tool install
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -137,7 +141,9 @@ jobs:
         run: go mod download
 
       - name: Run tests
-        run: go run build/ci.go test
+        run: |
+          go build -o ci-tool build/ci.go
+          ./ci-tool test
         env:
           GOOS: linux
           GOARCH: amd64
@@ -172,7 +178,9 @@ jobs:
         run: go mod download
 
       - name: Build geth
-        run: go run build/ci.go install ./cmd/geth
+        run: |
+          go build -o ci-tool build/ci.go
+          ./ci-tool install ./cmd/geth
 
       - name: Run integration tests
         run: |
@@ -244,16 +252,18 @@ jobs:
 
       - name: Build release binaries
         run: |
+          go build -o ci-tool build/ci.go
+          
           # Linux
-          GOOS=linux GOARCH=amd64 go run build/ci.go install
+          GOOS=linux GOARCH=amd64 ./ci-tool install
           tar -czf geth-linux-amd64.tar.gz -C build/bin .
           
           # Windows
-          GOOS=windows GOARCH=amd64 go run build/ci.go install
+          GOOS=windows GOARCH=amd64 ./ci-tool install
           zip -r geth-windows-amd64.zip build/bin/
           
           # macOS
-          GOOS=darwin GOARCH=amd64 go run build/ci.go install
+          GOOS=darwin GOARCH=amd64 ./ci-tool install
           tar -czf geth-darwin-amd64.tar.gz -C build/bin .
 
       - name: Upload release artifacts
