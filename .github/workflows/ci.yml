@@ -104,7 +104,7 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: geth-${{ matrix.goos }}-${{ matrix.goarch }}
           path: build/bin/
@@ -257,7 +257,7 @@ jobs:
           tar -czf geth-darwin-amd64.tar.gz -C build/bin .
 
       - name: Upload release artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-binaries
           path: |
