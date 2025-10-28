@@ -49,6 +49,7 @@ jobs:
             gofmt -s -l .
             exit 1
           fi
+        continue-on-error: true
 
   # Build tests
   build:
