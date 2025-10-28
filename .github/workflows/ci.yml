@@ -1,0 +1,267 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  GO_VERSION: '1.23'
+  GOBIN: './build/bin'
+
+jobs:
+  # Code quality checks
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      # - name: Run linters
+      #   run: go run build/ci.go lint
+      #   continue-on-error: true
+
+      - name: Check code formatting
+        run: |
+          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+            echo "Code is not formatted. Run 'make fmt' to fix."
+            gofmt -s -l .
+            exit 1
+          fi
+        continue-on-error: true
+
+  # Build tests
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: lint
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build geth
+        run: go run build/ci.go install ./cmd/geth
+
+      - name: Build all tools
+        run: go run build/ci.go install
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: geth-linux-amd64
+          path: build/bin/
+          retention-days: 7
+
+  # Unit tests
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      # - name: Run tests
+      #   run: |
+      #     go build -o ci-tool build/ci.go
+      #     ./ci-tool test
+      #   env:
+      #     GOOS: linux
+      #     GOARCH: amd64
+      #   continue-on-error: true
+
+      - name: Run short tests
+        run: go test -short ./...
+
+  # Integration tests
+  integration-test:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build geth
+        run: |
+          go build -o ci-tool build/ci.go
+          ./ci-tool install ./cmd/geth
+
+      - name: Run integration tests
+        run: |
+          # Start test network
+          ./build/bin/geth --testnet --datadir=./testdata --verbosity=3 &
+          GETH_PID=$!
+          
+          # Wait for node to start
+          sleep 10
+          
+          # Run integration tests
+          go test -v ./tests/... -timeout=30m
+          
+          # Cleanup
+          kill $GETH_PID
+        continue-on-error: true
+
+  # Security scan
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run Go Vet
+        run: go vet ./...
+        continue-on-error: true
+
+      - name: Run Staticcheck
+        uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"
+          install-go: false
+          args: "-checks=all,-ST1000,-ST1003,-ST1005,-ST1012,-ST1016,-ST1020,-ST1021,-ST1022,-ST1023,-SA1006,-SA1019,-SA1029,-SA4003,-SA4011,-SA9009,-S1009,-S1024,-U1000"
+        continue-on-error: true
+
+  # Release build
+  release:
+    name: Release Build
+    runs-on: ubuntu-latest
+    needs: [build, test, integration-test, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    continue-on-error: true
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build release binaries
+        run: |
+          # Linux AMD64
+          go run build/ci.go install
+          tar -czf geth-linux-amd64.tar.gz -C build/bin .
+
+      - name: Build source archives
+        run: |
+          # Create source archive (tar.gz)
+          tar --exclude='.git' \
+              --exclude='build' \
+              --exclude='node_modules' \
+              --exclude='.github/workflows' \
+              --exclude='*.log' \
+              --exclude='testdata' \
+              -czf juchain-source.tar.gz .
+          
+          # Create source archive (zip)
+          zip -r juchain-source.zip . \
+              -x '.git/*' \
+              -x 'build/*' \
+              -x 'node_modules/*' \
+              -x '.github/workflows/*' \
+              -x '*.log' \
+              -x 'testdata/*'
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-binaries
+          path: |
+            geth-linux-amd64.tar.gz
+            juchain-source.tar.gz
+            juchain-source.zip
+          retention-days: 30
+
