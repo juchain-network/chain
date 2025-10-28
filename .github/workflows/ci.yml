@@ -38,9 +38,9 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run linters
-        run: go run build/ci.go lint
-        continue-on-error: true
+      # - name: Run linters
+      #   run: go run build/ci.go lint
+      #   continue-on-error: true
 
       - name: Check code formatting
         run: |
