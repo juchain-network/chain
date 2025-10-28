@@ -1,5 +1,12 @@
 ## JuChain
 
+[![CI/CD Pipeline](https://github.com/juchain-network/chain/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/juchain-network/chain/actions/workflows/ci.yml)
+[![PR Checks](https://github.com/juchain-network/chain/workflows/PR%20Checks/badge.svg)](https://github.com/juchain-network/chain/actions/workflows/pr-checks.yml)
+[![Release](https://github.com/juchain-network/chain/workflows/Release%20&%20Deploy/badge.svg)](https://github.com/juchain-network/chain/actions/workflows/release.yml)
+[![Go Version](https://img.shields.io/badge/Go-1.23-blue.svg)](https://golang.org/)
+[![License](https://img.shields.io/badge/License-LGPL%20v3-green.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
+[![GitHub stars](https://img.shields.io/github/stars/juchain-network/chain.svg)](https://github.com/juchain-network/chain/stargazers)
+
 JuChain aims to bring programmability and interoperability to the Ju Beacon Chain. To embrace the existing Ethereum ecosystem and advanced technologies, JuChain is developed as a fork of go-ethereum, supporting all Ethereum smart contracts and tooling.
 
 JuChain is based on go-ethereum, so you will find many tools, binaries, and documentation similar to Ethereum, such as the name "geth".
