@@ -15,7 +15,7 @@ On top of EVM compatibility, JuChain introduces a Proof of Staked Authority (JPo
 
 **JuChain Features:**
 
-* **Self-sovereign blockchain:** Security and reliability through elected validators.
+* **Self-sovereign blockchain:** Security and reliability through elected validators.****
 * **EVM compatible:** Supports all Ethereum tooling, with faster finality and lower transaction fees.
 * **On-chain governance and decentralization:** JPoA consensus brings decentralization and community participation. The native token JU serves as both gas for smart contract execution and staking/governance.
 
@@ -154,28 +154,6 @@ use separate accounts for play-money and real-money. Unless you manually move
 accounts, `geth` will by default correctly separate the two networks and will not make any
 accounts available between them.*
 
-### Full node on the Rinkeby test network
-
-Go Ethereum also supports connecting to the older proof-of-authority based test network
-called [*Rinkeby*](https://www.rinkeby.io) which is operated by members of the community.
-
-```shell
-$ geth --rinkeby console
-```
-
-### Full node on the Ropsten test network
-
-In addition to Görli and Rinkeby, Geth also supports the ancient Ropsten testnet. The
-Ropsten test network is based on the Ethash proof-of-work consensus algorithm. As such,
-it has certain extra overhead and is more susceptible to reorganization attacks due to the
-network's low difficulty/security.
-
-```shell
-$ geth --ropsten console
-```
-
-*Note: Older Geth configurations store the Ropsten database in the `testnet` subdirectory.*
-
 ### Configuration
 
 As an alternative to passing the numerous flags to the `geth` binary, you can also pass a
@@ -193,26 +171,6 @@ $ geth --your-favourite-flags dumpconfig
 ```
 
 *Note: This works only with `geth` v1.6.0 and above.*
-
-#### Docker quick start
-
-One of the quickest ways to get Ethereum up and running on your machine is by using
-Docker:
-
-```shell
-docker run -d --name ethereum-node -v /Users/alice/ethereum:/root \
-           -p 8545:8545 -p 30303:30303 \
-           ethereum/client-go
-```
-
-This will start `geth` in fast-sync mode with a DB memory allowance of 1GB just as the
-above command does.  It will also create a persistent volume in your home directory for
-saving your blockchain as well as map the default ports. There is also an `alpine` tag
-available for a slim version of the image.
-
-Do not forget `--http.addr 0.0.0.0`, if you want to access RPC from other containers
-and/or hosts. By default, `geth` binds to the local interface and RPC endpoints is not
-accessible from the outside.
 
 ### Programmatically interfacing `geth` nodes
 
@@ -376,7 +334,7 @@ transactions are accepted at (`--miner.gasprice`).
 
 Join our community to stay updated and connect with other developers:
 
-* **Discord**: [https://discord.gg/jFdDcpjv](https://discord.gg/jFdDcpjv) - Join our developer community for discussions, support, and collaboration
+* **Discord**: [https://discord.com/invite/QMVjsaJTmA](https://discord.com/invite/QMVjsaJTmA) - Join our developer community for discussions, support, and collaboration
 * **Twitter/X**: [https://x.com/juchain101](https://x.com/juchain101) - Follow us for the latest updates and announcements
 
 ## Contribution
@@ -386,7 +344,7 @@ from anyone on the internet, and are grateful for even the smallest of fixes!
 
 If you'd like to contribute to JuChain, please fork, fix, commit and send a pull request
 for the maintainers to review and merge into the main code base. If you wish to submit
-more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/jFdDcpjv)
+more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.com/invite/QMVjsaJTmA)
 to ensure those changes are in line with the general philosophy of the project and/or get
 some early feedback which can make both your efforts much lighter as well as our review
 and merge procedures quick and simple.
