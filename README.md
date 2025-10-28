@@ -273,14 +273,21 @@ proceedings to the account specified by `--miner.etherbase`. You can further tun
 by changing the default gas limit blocks converge to (`--miner.targetgaslimit`) and the price
 transactions are accepted at (`--miner.gasprice`).
 
+## Community
+
+Join our community to stay updated and connect with other developers:
+
+* **Discord**: [https://discord.gg/jFdDcpjv](https://discord.gg/jFdDcpjv) - Join our developer community for discussions, support, and collaboration
+* **Twitter/X**: [https://x.com/juchain101](https://x.com/juchain101) - Follow us for the latest updates and announcements
+
 ## Contribution
 
 Thank you for considering helping out with the source code! We welcome contributions
 from anyone on the internet, and are grateful for even the smallest of fixes!
 
-If you'd like to contribute to go-ethereum, please fork, fix, commit and send a pull request
+If you'd like to contribute to JuChain, please fork, fix, commit and send a pull request
 for the maintainers to review and merge into the main code base. If you wish to submit
-more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/invite/nthXNEv)
+more complex changes though, please check up with the core devs first on [our Discord Server](https://discord.gg/jFdDcpjv)
 to ensure those changes are in line with the general philosophy of the project and/or get
 some early feedback which can make both your efforts much lighter as well as our review
 and merge procedures quick and simple.
