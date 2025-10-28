@@ -4,10 +4,6 @@ JuChain aims to bring programmability and interoperability to the Ju Beacon Chai
 
 JuChain is based on go-ethereum, so you will find many tools, binaries, and documentation similar to Ethereum, such as the name "geth".
 
-[![API Reference](https://pkg.go.dev/badge/github.com/ethereum/go-ethereum)](https://pkg.go.dev/github.com/ethereum/go-ethereum?tab=doc)
-[![Build Test](https://github.com/ju-chain/juchain/actions/workflows/build-test.yml/badge.svg)](https://github.com/ju-chain/juchain/actions)
-[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/z2VpC455eU)
-
 On top of EVM compatibility, JuChain introduces a Proof of Staked Authority (JPoA) consensus mechanism with 21 validators, supporting shorter block times and lower transaction fees. The top staking candidates become validators and produce blocks. Double-sign detection and slashing logic guarantee security, stability, and chain finality.
 
 **JuChain Features:**
@@ -16,7 +12,7 @@ On top of EVM compatibility, JuChain introduces a Proof of Staked Authority (JPo
 * **EVM compatible:** Supports all Ethereum tooling, with faster finality and lower transaction fees.
 * **On-chain governance and decentralization:** JPoA consensus brings decentralization and community participation. The native token JU serves as both gas for smart contract execution and staking/governance.
 
-See more details in the [White Paper](https://github.com/ju-chain/whitepaper/blob/master/WHITEPAPER.md).
+See more details in the [JuChain Docs](https://juchain.gitbook.io/juchain-docs).
 
 ## Key Features
 
