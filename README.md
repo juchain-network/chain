@@ -15,7 +15,7 @@ On top of EVM compatibility, JuChain introduces a Proof of Staked Authority (JPo
 
 **JuChain Features:**
 
-* **Self-sovereign blockchain:** Security and reliability through elected validators.****
+* **Self-sovereign blockchain:** Security and reliability through elected validators.
 * **EVM compatible:** Supports all Ethereum tooling, with faster finality and lower transaction fees.
 * **On-chain governance and decentralization:** JPoA consensus brings decentralization and community participation. The native token JU serves as both gas for smart contract execution and staking/governance.
 
