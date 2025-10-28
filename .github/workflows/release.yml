@@ -1,0 +1,197 @@
+name: Release & Deploy
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+env:
+  GO_VERSION: '1.23'
+
+jobs:
+  # Create GitHub Release
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod download
+
+      - name: Build release binaries
+        run: |
+          # Linux AMD64
+          GOOS=linux GOARCH=amd64 go run build/ci.go install
+          tar -czf geth-linux-amd64.tar.gz -C build/bin .
+          
+          # Linux ARM64
+          GOOS=linux GOARCH=arm64 go run build/ci.go install
+          tar -czf geth-linux-arm64.tar.gz -C build/bin .
+          
+          # Windows AMD64
+          GOOS=windows GOARCH=amd64 go run build/ci.go install
+          zip -r geth-windows-amd64.zip build/bin/
+          
+          # macOS AMD64
+          GOOS=darwin GOARCH=amd64 go run build/ci.go install
+          tar -czf geth-darwin-amd64.tar.gz -C build/bin .
+          
+          # macOS ARM64 (Apple Silicon)
+          GOOS=darwin GOARCH=arm64 go run build/ci.go install
+          tar -czf geth-darwin-arm64.tar.gz -C build/bin .
+
+      - name: Generate checksums
+        run: |
+          sha256sum geth-*.tar.gz geth-*.zip > checksums.txt
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name || inputs.version }}
+          release_name: JuChain ${{ github.ref_name || inputs.version }}
+          body: |
+            ## JuChain ${{ github.ref_name || inputs.version }}
+            
+            ### Downloads
+            
+            **Linux:**
+            - [geth-linux-amd64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-linux-amd64.tar.gz)
+            - [geth-linux-arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-linux-arm64.tar.gz)
+            
+            **Windows:**
+            - [geth-windows-amd64.zip](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-windows-amd64.zip)
+            
+            **macOS:**
+            - [geth-darwin-amd64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-darwin-amd64.tar.gz)
+            - [geth-darwin-arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-darwin-arm64.tar.gz)
+            
+            ### Installation
+            
+            ```bash
+            # Download and extract
+            wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name || inputs.version }}/geth-linux-amd64.tar.gz
+            tar -xzf geth-linux-amd64.tar.gz
+            
+            # Run
+            ./geth --help
+            ```
+            
+            ### Changes
+            
+            See the [changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for detailed changes.
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./geth-linux-amd64.tar.gz
+          asset_name: geth-linux-amd64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Linux ARM64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./geth-linux-arm64.tar.gz
+          asset_name: geth-linux-arm64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Windows AMD64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./geth-windows-amd64.zip
+          asset_name: geth-windows-amd64.zip
+          asset_content_type: application/zip
+
+      - name: Upload macOS AMD64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./geth-darwin-amd64.tar.gz
+          asset_name: geth-darwin-amd64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload macOS ARM64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./geth-darwin-arm64.tar.gz
+          asset_name: geth-darwin-arm64.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./checksums.txt
+          asset_name: checksums.txt
+          asset_content_type: text/plain
+
+
+  # Notifications
+  notify:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: always()
+    
+    steps:
+      - name: Notify Discord
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            🚀 **JuChain ${{ github.ref_name || inputs.version }} Released!**
+            
+            📦 **Downloads available for:**
+            - Linux (AMD64/ARM64)
+            - Windows (AMD64)
+            - macOS (AMD64/ARM64)
+            
+            🔗 **Release:** https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name || inputs.version }}
