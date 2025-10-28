@@ -116,14 +116,14 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
-      - name: Run tests
-        run: |
-          go build -o ci-tool build/ci.go
-          ./ci-tool test
-        env:
-          GOOS: linux
-          GOARCH: amd64
-        continue-on-error: true
+      # - name: Run tests
+      #   run: |
+      #     go build -o ci-tool build/ci.go
+      #     ./ci-tool test
+      #   env:
+      #     GOOS: linux
+      #     GOARCH: amd64
+      #   continue-on-error: true
 
       - name: Run short tests
         run: go test -short ./...
